@@ -18,151 +18,157 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Custom Reduction example for operations on some simple CSV data that involve a custom reduction.
+ * Custom Reduction example for operations on some simple CSV data that involve
+ * a custom reduction.
  *
  * @author François Garillot
  */
 
 public class CustomReduceExample {
 
-    private static class CustomReduceTakeSecond implements AggregableColumnReduction {
+	private static class CustomReduceTakeSecond implements AggregableColumnReduction {
 
-        @Override
-        public IAggregableReduceOp<Writable, List<Writable>> reduceOp() {
-            //For testing: let's take the second value
-            return new AggregableMultiOp<>(Collections.<IAggregableReduceOp<Writable, Writable>>singletonList(new AggregableSecond<Writable>()));
-        }
+		@Override
+		public IAggregableReduceOp<Writable, List<Writable>> reduceOp() {
+			// For testing: let's take the second value
+			return new AggregableMultiOp<>(Collections
+					.<IAggregableReduceOp<Writable, Writable>> singletonList(new AggregableSecond<Writable>()));
+		}
 
-        @Override
-        public List<String> getColumnsOutputName(String columnInputName) {
-            return Collections.singletonList("myCustomReduce(" + columnInputName + ")");
-        }
+		@Override
+		public List<String> getColumnsOutputName(String columnInputName) {
+			return Collections.singletonList("myCustomReduce(" + columnInputName + ")");
+		}
 
-        @Override
-        public List<ColumnMetaData> getColumnOutputMetaData(List<String> newColumnName, ColumnMetaData columnInputMeta) {
-            ColumnMetaData thiscolumnMeta = new StringMetaData(newColumnName.get(0));
-            return Collections.singletonList(thiscolumnMeta);
-        }
+		@Override
+		public List<ColumnMetaData> getColumnOutputMetaData(List<String> newColumnName,
+				ColumnMetaData columnInputMeta) {
+			ColumnMetaData thiscolumnMeta = new StringMetaData(newColumnName.get(0));
+			return Collections.singletonList(thiscolumnMeta);
+		}
 
-        public static class AggregableSecond<T> implements IAggregableReduceOp<T, Writable> {
-            private T firstMet = null;
-            private T elem = null;
+		public static class AggregableSecond<T> implements IAggregableReduceOp<T, Writable> {
+			private T firstMet = null;
+			private T elem = null;
 
-            protected T getFirstMet(){
-                return firstMet;
-            }
+			protected T getFirstMet() {
+				return firstMet;
+			}
 
-            protected T getElem(){
-                return elem;
-            }
+			protected T getElem() {
+				return elem;
+			}
 
-            @Override
-            public void accept(T element) {
-                if (firstMet == null) firstMet = element;
-                else {
-                    if (elem == null) elem = element;
-                }
-            }
+			@Override
+			public void accept(T element) {
+				if (firstMet == null)
+					firstMet = element;
+				else {
+					if (elem == null)
+						elem = element;
+				}
+			}
 
-            @Override
-            public <W extends IAggregableReduceOp<T, Writable>> void combine(W accu) {
-                if (accu instanceof AggregableSecond && elem == null) {
-                    if (firstMet == null) { // this accumulator is empty, import accu
-                        AggregableSecond<T> accumulator = (AggregableSecond) accu;
-                        T otherFirst = accumulator.getFirstMet();
-                        T otherElement = accumulator.getElem();
-                        if (otherFirst != null) firstMet = otherFirst;
-                        if (otherElement != null) elem = otherElement;
-                    } else { // we have the first element, they may have the rest
-                        AggregableSecond<T> accumulator = (AggregableSecond) accu;
-                        T otherFirst = accumulator.getFirstMet();
-                        if (otherFirst != null) elem = otherFirst;
-                    }
-                }
-            }
+			@Override
+			public <W extends IAggregableReduceOp<T, Writable>> void combine(W accu) {
+				if (accu instanceof AggregableSecond && elem == null) {
+					if (firstMet == null) { // this accumulator is empty, import
+											// accu
+						AggregableSecond<T> accumulator = (AggregableSecond) accu;
+						T otherFirst = accumulator.getFirstMet();
+						T otherElement = accumulator.getElem();
+						if (otherFirst != null)
+							firstMet = otherFirst;
+						if (otherElement != null)
+							elem = otherElement;
+					} else { // we have the first element, they may have the
+								// rest
+						AggregableSecond<T> accumulator = (AggregableSecond) accu;
+						T otherFirst = accumulator.getFirstMet();
+						if (otherFirst != null)
+							elem = otherFirst;
+					}
+				}
+			}
 
-            @Override
-            public Writable get() {
-                return UnsafeWritableInjector.inject(elem);
-            }
-        }
+			@Override
+			public Writable get() {
+				return UnsafeWritableInjector.inject(elem);
+			}
+		}
 
-        /**
-         * Get the output schema for this transformation, given an input schema
-         *
-         * @param inputSchema
-         */
-        @Override
-        public Schema transform(Schema inputSchema) {
-            return null;
-        }
+		/**
+		 * Get the output schema for this transformation, given an input schema
+		 *
+		 * @param inputSchema
+		 */
+		@Override
+		public Schema transform(Schema inputSchema) {
+			return null;
+		}
 
-        /**
-         * Set the input schema.
-         *
-         * @param inputSchema
-         */
-        @Override
-        public void setInputSchema(Schema inputSchema) {
+		/**
+		 * Set the input schema.
+		 *
+		 * @param inputSchema
+		 */
+		@Override
+		public void setInputSchema(Schema inputSchema) {
 
-        }
+		}
 
-        /**
-         * Getter for input schema
-         *
-         * @return
-         */
-        @Override
-        public Schema getInputSchema() {
-            return null;
-        }
+		/**
+		 * Getter for input schema
+		 *
+		 * @return
+		 */
+		@Override
+		public Schema getInputSchema() {
+			return null;
+		}
 
-        /**
-         * The output column name
-         * after the operation has been applied
-         *
-         * @return the output column name
-         */
-        @Override
-        public String outputColumnName() {
-            return null;
-        }
+		/**
+		 * The output column name after the operation has been applied
+		 *
+		 * @return the output column name
+		 */
+		@Override
+		public String outputColumnName() {
+			return null;
+		}
 
-        /**
-         * The output column names
-         * This will often be the same as the input
-         *
-         * @return the output column names
-         */
-        @Override
-        public String[] outputColumnNames() {
-            return new String[0];
-        }
+		/**
+		 * The output column names This will often be the same as the input
+		 *
+		 * @return the output column names
+		 */
+		@Override
+		public String[] outputColumnNames() {
+			return new String[0];
+		}
 
-        /**
-         * Returns column names
-         * this op is meant to run on
-         *
-         * @return
-         */
-        @Override
-        public String[] columnNames() {
-            return new String[0];
-        }
+		/**
+		 * Returns column names this op is meant to run on
+		 *
+		 * @return
+		 */
+		@Override
+		public String[] columnNames() {
+			return new String[0];
+		}
 
-        /**
-         * Returns a singular column name
-         * this op is meant to run on
-         *
-         * @return
-         */
-        @Override
-        public String columnName() {
-            return null;
-        }
-    }
+		/**
+		 * Returns a singular column name this op is meant to run on
+		 *
+		 * @return
+		 */
+		@Override
+		public String columnName() {
+			return null;
+		}
+	}
 
-    public static  void main(String[] args) throws Exception {
+	public static  void main(String[] args) throws Exception {
 
         //=====================================================================
         //                 Step 1: Define the input data schema as in the Basic Example
@@ -179,7 +185,8 @@ public class CustomReduceExample {
             .addColumnDouble("TransactionAmountUSD",0.0,null,false,false)   //$0.0 or more, no maximum limit, no NaN and no Infinite values
             .addColumnCategorical("FraudLabel", Arrays.asList("Fraud","Legit"))
             .build();
-
+        System.out.println(inputDataSchema);
+        System.out.println("\n");
 
 
         //Lets define some operations to execute on the data...
