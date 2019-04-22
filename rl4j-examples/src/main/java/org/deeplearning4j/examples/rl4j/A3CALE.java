@@ -50,6 +50,7 @@ public class A3CALE {
             new A3CDiscrete.A3CConfiguration(
                     123,            //Random seed
                     10000,          //Max step By epoch
+                    100,			//Max epoch
                     8000000,        //Max step
                     8,              //Number of threads
                     32,             //t_max

@@ -24,6 +24,7 @@ public class A3CCartpole {
             new A3CDiscrete.A3CConfiguration(
                     123,            //Random seed
                     200,            //Max step By epoch
+                    100,			//Max epoch
                     500000,         //Max step
                     16,              //Number of threads
                     5,              //t_max

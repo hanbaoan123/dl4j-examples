@@ -49,6 +49,7 @@ public class ALE {
             new QLearning.QLConfiguration(
                     123,      //Random seed
                     10000,    //Max step By epoch
+                    100,			//Max epoch
                     8000000,  //Max step
                     1000000,  //Max size of experience replay
                     32,       //size of batches

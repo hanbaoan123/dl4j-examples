@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 public class MalmoPixels {
     public static QLearning.QLConfiguration MALMO_QL = new QLearning.QLConfiguration(123, //Random seed
                     200, //Max step By epoch
+                    100,			//Max epoch
                     100000, //Max step
                     50000, //Max size of experience replay
                     32, //size of batches

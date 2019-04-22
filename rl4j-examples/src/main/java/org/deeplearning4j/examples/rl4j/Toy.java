@@ -30,6 +30,7 @@ public class Toy {
             new QLearning.QLConfiguration(
                     123,   //Random seed
                     100000,//Max step By epoch
+                    100,			//Max epoch
                     80000, //Max step
                     10000, //Max size of experience replay
                     32,    //size of batches
@@ -48,6 +49,7 @@ public class Toy {
             new AsyncNStepQLearningDiscrete.AsyncNStepQLConfiguration(
                     123,        //Random seed
                     100000,     //Max step By epoch
+                    100,			//Max epoch
                     80000,      //Max step
                     8,          //Number of threads
                     5,          //t_max
